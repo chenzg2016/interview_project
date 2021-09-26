@@ -1,0 +1,32 @@
+Java 基础面试题
+
+1、String/StringBuffer/StringBuilder的区别
+
+String是一个单独的类，它是用final修饰的，所以不可变，如果对一个已经赋值过的 String再次赋值，其实是断开了与前面String 的指针，指向了新的 String 内存地址，另外，
+new String 每次都是新建一个对象。
+StringBuffer和 StringBuilder新建的都是普通对象，而StringBuffer因为在修改类型的方法上都加了synchronized所以是线程安全的。
+而StringBuilder是线程不安全的。
+
+2、HashMap的结构，1.7和1.8的区别，怎么扩容的，为什么说是线程不安全的，具体原因是什么
+
+哈希表+链表的数据结构，put 方法也有返回值，如果是存在的 key，返回 key 对应的 oldValue，如果不存在，返回的是null。
+扩容是按照2倍扩容，首先是新建空间，然后进行元素索引的定位，就是再次构建 hash 表。1.8改为了在链表元素大等于8的时候，链表转为红黑树，这么做的目的是解决链表过长引起的查询效率低的问题。
+线程不安全主要是在 put 时候的时候会产生数据覆盖和扩容时导致死循环的问题，1.7容易产生死循环。
+解决的手段是用collections.synchronizedMap或ConcurrentHashMap。
+
+3、LinkedList和ArrayList的区别
+
+LinkedList和ArrayList的共同点都实现了 List 接口，所以都是一个 List，区别是 Linked 还实现了 Deque 接口，说明是一个双端队列。
+
+存储方式上，ArrayList是逻辑上相邻的地址空间，通过 index 可以直接定位到所在元素。而LinkedList 由于使用链表的原因，如果想查找某个元素，只能通过遍历的方式。
+所以在容量上去之后，随机读操作上，ArrayList的性能比较好，而LinkedList则比较差。
+而在随机写操作上，LinkedList则性能好于 ArrayList，原因显而易见，LinkedList只需要进行相邻元素的指针指向变更而已;而 ArrayList则需要进行后续多个元素的索引变更，带来的时间复杂度hen
+很明显高于 LinkedList。
+
+通常来说，两者占用空间区别不大，一般是ArrayList略小，但在大量元素的情况下，LinkedList占用空间会显著多于ArrayList，原因是LinkedList需要额外占用存在指针的空间。
+
+4、为什么重写equals，hashcode方法也要重写
+
+如果两个对象相等，则 hashcode 一定也是相同的。
+两个对象相等,对两个对象分别调用 equals 方法都返回 true。
+但是，两个对象有相同的 hashcode 值，它们也不一定是相等的 。因此，equals 方法被覆盖过，则 hashCode 方法也必须被覆盖。
